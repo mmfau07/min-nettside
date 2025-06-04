@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './login/page';
+import Home from './route/home/page';
+import Login from './route/login/page';
 
 
 function Conecter() {
@@ -8,8 +9,9 @@ function Conecter() {
 		<div className="Conecter">
 			<Router>
 				<Routes>
-					<Route path='/login' element={<Login />}></Route>
+					<Route path='/login' element={<Login />} />
 					<Route path="/" element={<Navigate to="/login" />} />
+					<Route path="/home" element={<Home />} />
 				</Routes>
 			</Router>
 		</div>

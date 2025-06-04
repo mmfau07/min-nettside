@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS Users (
+    id INT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    token_expiry TIMESTAMP NOT NULL
+);
