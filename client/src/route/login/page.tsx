@@ -116,6 +116,7 @@ export default function Login() {
                     <tr>
                         <button onClick={handleLogin}>login</button>
                     </tr>
+                    <a href="/createUser">Don't have an account? Sign up</a>
                     {error && (
                         <tr>
                             <td colSpan={2} style={{ color: 'red' }}>{error}</td>

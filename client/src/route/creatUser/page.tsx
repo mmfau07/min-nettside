@@ -4,6 +4,7 @@ export default function CreateUser() {
     const [error, setError] = useState<string | null>(null);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [isloding, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -62,6 +63,16 @@ export default function CreateUser() {
     
 
     function createUser() {
+        if (!username || !password || !confirmPassword) {
+            setError('Please fill in all fields');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+
         fetch('http://localhost:5000/api/createUser', {
             method: 'POST',
             headers: {
@@ -100,7 +111,7 @@ export default function CreateUser() {
 
     return (
     <div>
-        <h1>Login Page</h1>
+        <h1>sign up</h1>
         <table>
             <tbody>
                 <tr>
@@ -112,8 +123,13 @@ export default function CreateUser() {
                     <td><input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /></td>
                 </tr>
                 <tr>
+                    <td>confirm:</td>
+                    <td><input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} /></td>
+                </tr>
+                <tr>
                     <button onClick={createUser}>creat</button>
                 </tr>
+                <a href="/login">Have an account? Log in</a>
                 {error && (
                     <tr>
                         <td colSpan={2} style={{ color: 'red' }}>{error}</td>
