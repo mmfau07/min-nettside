@@ -1,14 +1,12 @@
-"use client";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function Login() {
+export default function CreateUser() {
     const [error, setError] = useState<string | null>(null);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isloding, setIsLoading] = useState(true);
 
     useEffect(() => {
-
         // Check if cookies are set and if so the login emidiately
         const usernameCookie = document.cookie.split('; ').find(row => row.startsWith('username='));
         const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('token='));
@@ -53,6 +51,7 @@ export default function Login() {
         // Set loading to false after checking cookies
         setIsLoading(false);
     }, [])
+    
 
     function setCookie(cname: string, cvalue: string) {
         const date = new Date();
@@ -60,17 +59,18 @@ export default function Login() {
         let expires = "expires="+ date.toUTCString();
         document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     }
+    
 
-    function handleLogin() {
-        fetch('http://localhost:5000/api/login', {
+    function createUser() {
+        fetch('http://localhost:5000/api/createUser', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username: username, password: password })
+        },
+        body: JSON.stringify({ username: username, password: password })
         }).then(response => {
             if (response.ok) {
-                
+
                 // add cookie
                 response.json().then(data => {
                     if (!data.username || !data.token) {
@@ -79,7 +79,7 @@ export default function Login() {
                         setCookie('username', data.username);
                         setCookie('token', data.token);
 
-                        // Redirect to the home page or another page after successful login
+                        // Redirect to the home page or another page after successful user creation
                         window.location.href = '/home';
                     }
                 })
@@ -87,42 +87,40 @@ export default function Login() {
             } else {
                 // Handle error response
                 response.json().then(data => {
-                    setError(data.message || 'Login failed');
+                    console.error(data);
+                    setError(data.message || 'User creation failed');
                 }).catch(() => {
-                    setError('Login failed');
+                    setError('User creation failed');
                 });
             }
-        }).catch(error => {
-            console.error('Network error:', error);
-            setError('Unable to connect to server.');
         })
     }
 
-    if (isloding) return <div>loading...</div>
+    if (isloding) return <div>Loading...</div>;
 
     return (
-        <div>
-            <h1>Login Page</h1>
-            <table>
-                <tbody>
+    <div>
+        <h1>Login Page</h1>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Username:</td>
+                    <td><input type="text" value={username} onChange={(e) => setUsername(e.target.value)} /></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td><input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /></td>
+                </tr>
+                <tr>
+                    <button onClick={createUser}>creat</button>
+                </tr>
+                {error && (
                     <tr>
-                        <td>Username:</td>
-                        <td><input type="text" value={username} onChange={(e) => setUsername(e.target.value)} /></td>
+                        <td colSpan={2} style={{ color: 'red' }}>{error}</td>
                     </tr>
-                    <tr>
-                        <td>Password:</td>
-                        <td><input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /></td>
-                    </tr>
-                    <tr>
-                        <button onClick={handleLogin}>login</button>
-                    </tr>
-                    {error && (
-                        <tr>
-                            <td colSpan={2} style={{ color: 'red' }}>{error}</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        </div>
+                )}
+            </tbody>
+        </table>
+    </div>
     )
 }

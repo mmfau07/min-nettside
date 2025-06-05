@@ -29,14 +29,26 @@ export default function Home() {
                     // Redirect to the home page or another page after successful cookie check
                     response.json().then(data => {
                         if (data.validToken === false) {
+                            document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                             window.location.href = '/login';
                         }
                     })
+                }
+                if (response.status === 401) {
+                    // Unauthorized, clear cookies and redirect to login
+                    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    window.location.href = '/login';
+                    setError('Invalid credentials, please login again.');
                 }
             }).catch(error => {
                 console.error('Network error:', error);
                 setError('Unable to connect to server.');
             })
+        } else {
+            // If cookies are not set, redirect to login page
+            window.location.href = '/login';
         }
 
         // Set loading to false after checking cookies
